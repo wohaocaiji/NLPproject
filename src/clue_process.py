@@ -3,34 +3,41 @@ Descripttion:
 version: 
 Author: zhaojin
 Date: 2021-11-13 20:47:31
-LastEditTime: 2021-11-13 20:47:32
+LastEditTime: 2021-11-14 00:07:37
 '''
 import json
+import pandas as pd
+import os
 
-def _read_json(input_file, mode="train"):
-    lines = []
-    with open(input_file,'r') as f:
-        for line in f:
-            line = json.loads(line.strip())
-            text = line['text']
-            label_entities = line.get('label',None)
-            words = list(text)
-            labels = ['O'] * len(words)
-            if label_entities is not None:
-                for key,value in label_entities.items():
-                    for sub_name,sub_index in value.items():
-                        for start_index,end_index in sub_index:
-                            assert  ''.join(words[start_index:end_index+1]) == sub_name
-                            if start_index == end_index:
-                                labels[start_index] = 'B-'+key
-                            else:
-                                labels[start_index] = 'B-'+key
-                                labels[start_index+1:end_index+1] = ['I-'+key]*(len(sub_name)-1)
-            lines.append({"words": words, "labels": labels})
+def _read_csv(input_file, mode="train"):
+    # lines = []
+    df=pd.read_csv(input_file)
+    words=list(map(lambda x:list(x),list(df['text'])))
+    labels=list(map(lambda x:x.split(' '),list(df['BIO_anno'])))
     
-    with open(f"/raid/ypj/openSource/cluener_public/{mode}.txt", "w") as f:
-        for line in lines:
-            for w, l in zip(line["words"], line["labels"]):
+    # with open(input_file,'r') as f:
+    #     for line in f:
+    #         line = json.loads(line.strip())
+    #         text = line['text']
+    #         label_entities = line.get('label',None)
+    #         words = list(text)
+    #         labels = ['O'] * len(words)
+    #         if label_entities is not None:
+    #             for key,value in label_entities.items():
+    #                 for sub_name,sub_index in value.items():
+    #                     for start_index,end_index in sub_index:
+    #                         assert  ''.join(words[start_index:end_index+1]) == sub_name
+    #                         if start_index == end_index:
+    #                             labels[start_index] = 'B-'+key
+    #                         else:
+    #                             labels[start_index] = 'B-'+key
+    #                             labels[start_index+1:end_index+1] = ['I-'+key]*(len(sub_name)-1)
+    #         lines.append({"words": words, "labels": labels})
+    
+    with open(f"data/{mode}_ner.txt", "w") as f:
+        # for line in lines:
+        for word, line in zip(words, labels):
+            for w, l in zip(word,line):
                 f.write(f"{w}\t{l}\n")
             f.write("\n")
 
@@ -75,9 +82,16 @@ def get_entity_bio(seq):
     return chunks
 
 if __name__ == "__main__":
-    _read_json("/raid/ypj/openSource/cluener_public/train.json", "train")
-    _read_json("/raid/ypj/openSource/cluener_public/dev.json", "dev")
-    _read_json("/raid/ypj/openSource/cluener_public/test.json", "test")
+    if not os.path.exists('data/train.csv'):
+        train_data=pd.read_csv('data/train_data_public.csv')
+        train=train_data.sample(frac=0.8)
+        dev=train_data[~train_data.index.isin(train.index)]
+        train.to_csv('data/train_ner.csv',index=False)
+        dev.to_csv('data/dev_ner.csv',index=False)
+
+    _read_csv("data/train_ner.csv", "train")
+    _read_csv("data/dev_ner.csv", "dev")
+    _read_csv("data/test_public.csv", "test")
 
     # with open("./model/clue/token_labels_.txt") as f:
     #     lines = [line.strip().split(" ") for line in f.readlines()]
