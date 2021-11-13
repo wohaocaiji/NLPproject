@@ -3,14 +3,15 @@
  # @version: 
  # @Author: zhaojin
  # @Date: 2021-11-13 21:00:51
- # @LastEditTime: 2021-11-13 21:00:51
+ # @LastEditTime: 2021-11-14 00:13:09
 ### 
+#! /bin/bash
 BERT_BASE_DIR=bert-base-chinese
-DATA_DIR=/raid/ypj/openSource/cluener_public/
+DATA_DIR=data/
 OUTPUT_DIR=./model/clue_bilstm
 export CUDA_VISIBLE_DEVICES=0
 
-python ner.py \
+python src/ner.py \
     --model_name_or_path ${BERT_BASE_DIR} \
     --do_train True \
     --do_eval True \
