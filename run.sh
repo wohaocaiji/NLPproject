@@ -17,10 +17,10 @@ python src/ner.py \
     --do_eval True \
     --do_test False \
     --max_seq_length 256 \
-    --train_file ${DATA_DIR}/train.txt \
-    --eval_file ${DATA_DIR}/dev.txt \
-    --test_file ${DATA_DIR}/test.txt \
-    --train_batch_size 32 \
+    --train_file ${DATA_DIR}/train_ner.txt \
+    --eval_file ${DATA_DIR}/dev_ner.txt \
+    --test_file ${DATA_DIR}/test_ner.txt \
+    --train_batch_size 16 \
     --eval_batch_size 32 \
     --num_train_epochs 10 \
     --do_lower_case \
