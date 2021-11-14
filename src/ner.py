@@ -12,7 +12,7 @@ import csv
 import logging
 import os
 import random
-import json
+import json,csv
 import sys
 import datetime
 import time
@@ -359,14 +359,25 @@ def main():
                 pred_labels.append(pred_label)
 
         assert len(pred_labels) == len(all_ori_tokens) == len(all_ori_labels)
-        print(len(pred_labels))
-        with open(os.path.join(args.output_dir, "token_labels_.txt"), "w", encoding="utf-8") as f:
-            for ori_tokens, ori_labels,prel in zip(all_ori_tokens, all_ori_labels, pred_labels):
-                for ot,ol,pl in zip(ori_tokens, ori_labels, prel):
+        with open(os.path.join(args.output_dir, "ner_predict.csv"), "w", encoding="utf-8") as f:
+            f_csv=csv.writer(f)
+            f_csv.writerow(['id','BIO_anno'])
+            for i,(ori_tokens,prel) in enumerate(zip(all_ori_tokens, pred_labels)):
+                predicts=[]
+                for ot,pl in zip(ori_tokens, prel):
                     if ot in ["[CLS]", "[SEP]"]:
                         continue
                     else:
-                        f.write(f"{ot} {ol} {pl}\n")
+                        predicts.append(pl)
+                predicts=' '.join(predicts)
+                f_csv.writerow([i,predicts])
+        with open(os.path.join(args.output_dir, "token_labels_.txt"), "w", encoding="utf-8") as f:
+            for ori_tokens,prel in zip(all_ori_tokens, pred_labels):
+                for ot,pl in zip(ori_tokens, prel):
+                    if ot in ["[CLS]", "[SEP]"]:
+                        continue
+                    else:
+                        f.write(f"{ot} {pl}\n")
                 f.write("\n")
 
 if __name__ == "__main__":

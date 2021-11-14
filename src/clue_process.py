@@ -13,7 +13,10 @@ def _read_csv(input_file, mode="train"):
     # lines = []
     df=pd.read_csv(input_file)
     words=list(map(lambda x:list(x),list(df['text'])))
-    labels=list(map(lambda x:x.split(' '),list(df['BIO_anno'])))
+    if mode == 'test':
+        labels=list(map(lambda x:len(x)*['O'],list(df['text'])))
+    else:
+        labels=list(map(lambda x:x.split(' '),list(df['BIO_anno'])))
     
     # with open(input_file,'r') as f:
     #     for line in f:
@@ -91,7 +94,9 @@ if __name__ == "__main__":
 
         _read_csv("data/train_ner.csv", "train")
         _read_csv("data/dev_ner.csv", "dev")
-        # _read_csv("data/test_public.csv", "test")
+
+    if not os.path.exists('data/test_ner.txt'):
+        _read_csv("data/test_public.csv", "test")
 
     # with open("./model/clue/token_labels_.txt") as f:
     #     lines = [line.strip().split(" ") for line in f.readlines()]

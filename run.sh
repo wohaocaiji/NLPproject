@@ -13,9 +13,9 @@ OUTPUT_DIR=./model/clue_bilstm
 
 python src/ner.py \
     --model_name_or_path ${BERT_BASE_DIR} \
-    --do_train True \
-    --do_eval True \
-    --do_test False \
+    --do_train False \
+    --do_eval False \
+    --do_test True \
     --max_seq_length 256 \
     --train_file ${DATA_DIR}/train_ner.txt \
     --eval_file ${DATA_DIR}/dev_ner.txt \
