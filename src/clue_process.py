@@ -3,7 +3,7 @@ Descripttion:
 version: 
 Author: zhaojin
 Date: 2021-11-13 20:47:31
-LastEditTime: 2021-11-14 00:07:37
+LastEditTime: 2021-11-14 11:13:21
 '''
 import json
 import pandas as pd
@@ -89,9 +89,9 @@ if __name__ == "__main__":
         train.to_csv('data/train_ner.csv',index=False)
         dev.to_csv('data/dev_ner.csv',index=False)
 
-    _read_csv("data/train_ner.csv", "train")
-    _read_csv("data/dev_ner.csv", "dev")
-    _read_csv("data/test_public.csv", "test")
+        _read_csv("data/train_ner.csv", "train")
+        _read_csv("data/dev_ner.csv", "dev")
+        # _read_csv("data/test_public.csv", "test")
 
     # with open("./model/clue/token_labels_.txt") as f:
     #     lines = [line.strip().split(" ") for line in f.readlines()]
